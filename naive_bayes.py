@@ -20,7 +20,7 @@ class NaiveBayes:
     #     return text
 
     def train(self, review, labels):
-        for i in range(len(reviews)):
+        for i in range(len(review)):
             # review = self.preprocess_text(reviews[i])
             words = review.split()
             
