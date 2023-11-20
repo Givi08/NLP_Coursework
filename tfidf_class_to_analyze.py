@@ -20,27 +20,6 @@ class TFIDF:
         self.positive_word_count = defaultdict(int)
         self.negative_word_count = defaultdict(int)
         
-        # Counters for positive and negative reviews
-        self.positive_reviews_count = 0
-        self.negative_reviews_count = 0
-
-### Remove this if using it as a class   
-    def process(self, text):
-        stoplist = set(stopwords.words('english'))
-        st = LancasterStemmer()
-        word_list = [st.stem(word) for word in word_tokenize(text.lower())
-                    if not word in stoplist and not word in string.punctuation]
-        return word_list
-    
-    def get_terms(self, text):
-        stoplist = set(stopwords.words('english'))
-        terms = {}
-        st = LancasterStemmer()
-        word_list = [st.stem(word) for word in word_tokenize(text.lower())
-                    if not word in stoplist and not word in string.punctuation]
-        for word in word_list:
-            terms[word] = terms.get(word, 0) + 1
-        return terms
     
     def collect_vocabulary(self, review_terms, label_terms):
         all_terms = []

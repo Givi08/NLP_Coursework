@@ -17,18 +17,14 @@ import operator
 class PreProcessing:
     def __init__(self):
         # Counters for positive and negative words
-        self.positive_word_count = defaultdict(int)
-        self.negative_word_count = defaultdict(int)
-        
-        # Counters for positive and negative reviews
-        self.positive_reviews_count = 0
-        self.negative_reviews_count = 0
+        self.X_train = None
+        self.X_test = None
+        self.X_dev = None
+        self.y_train = None 
+        self.y_test = None
+        self.y_dev = None
 
     
-        
-    # def tokenization(self, text):
-    #     tokens = word_tokenize(text)
-    #     return tokens
 
     def stemming(self, text, include_stopwords = False, include_punctuation = False, keep_uppercase = False):
         ## Use Stopwords example from labs
@@ -57,10 +53,11 @@ class PreProcessing:
         return word_list
     
     def set_n_grams(self, n, text):
-        if n > max_n:
-            n_grams = ngrams(text.split(), max_n)
+        if n > 5:
+            n_grams = list(ngrams(text, 5))
         else:
-            n_grams = ngrams(text.split(), n)
+            n_grams = list(ngrams(text, n))
+        self.n_grams = n_grams
         return n_grams
        
 
@@ -82,12 +79,12 @@ class PreProcessing:
         for word in text:
             terms[word] = terms.get(word, 0) + 1
         return terms
-        return 0
+
 
     def set_data_splits(self, data):
         ## Split pandas dataframe and store how it's being split (3 splits)
-        X = data.Reviews
-        y = data.labels
+        X = data.review
+        y = data.label
 
         # Split the dataset into training (70%), testing (15%), and development (15%)
         X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
