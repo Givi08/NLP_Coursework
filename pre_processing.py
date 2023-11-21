@@ -23,6 +23,7 @@ class PreProcessing:
         self.y_train = None 
         self.y_test = None
         self.y_dev = None
+        self.n_grams = 0
 
     
 
@@ -59,6 +60,9 @@ class PreProcessing:
             n_grams = list(ngrams(text, n))
         self.n_grams = n_grams
         return n_grams
+    
+    def get_n_grams(self):
+        return self.n_grams
        
 
     def freq_dist(word_list, up_to):
