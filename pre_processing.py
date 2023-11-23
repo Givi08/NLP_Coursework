@@ -6,11 +6,13 @@ import string
 
 nltk.download('stopwords')
 nltk.download('punkt')
+nltk.download('wordnet')
 
 from nltk import word_tokenize
 from nltk import ngrams
 from nltk.corpus import stopwords
 from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem import WordNetLemmatizer
 
 import operator
 
@@ -25,6 +27,30 @@ class PreProcessing:
         self.y_dev = None
         self.n_grams = 0
 
+    def lemmatizing(self, text, include_stopwords = False, include_punctuation = False, keep_uppercase = False):
+        stoplist = set(stopwords.words('english'))
+        lemmatizer=WordNetLemmatizer()
+
+        if not keep_uppercase:
+            text = text.lower()
+
+        if not include_stopwords and not include_punctuation:
+            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)
+                if (not word in stoplist) and (not word in string.punctuation)]
+        
+        elif not include_stopwords and include_punctuation:
+            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)
+                if (not word in stoplist)]
+        
+        elif include_stopwords and not include_punctuation:
+            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)
+                if (not word in string.punctuation)]
+            
+        else:
+            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)]
+
+            
+        return word_list
     
 
     def stemming(self, text, include_stopwords = False, include_punctuation = False, keep_uppercase = False):
