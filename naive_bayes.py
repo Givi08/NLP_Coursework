@@ -2,6 +2,7 @@ import re
 from collections import defaultdict
 
 import pandas as pd
+import numpy as np
 import math
 
 class NaiveBayes:
@@ -11,11 +12,6 @@ class NaiveBayes:
         self.word_count_negative = {}
         self.word_probability = {}
 
-    # def preprocess_text(self, text):
-    #     # Simple text preprocessing: lowercase and remove non-alphanumeric characters
-    #     text = text.lower()
-    #     text = re.sub(r'[^a-zA-Z\s]', '', text)
-    #     return text
 
     def train(self, review, label):
         # X_train.shape
