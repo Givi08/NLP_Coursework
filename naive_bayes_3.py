@@ -25,31 +25,35 @@ class NaiveBayes:
 
     def find_probability(self):
         self.word_probability = (np.array(list(self.word_count.values())) / sum(self.word_count.values()))
+        self.word_probability = dict(zip(self.word_probability, range(len(self.word_probability))))
         
-        threshold_p = (0.0001)
+        
         # self.word_count = self.word_count[self.word_count>= threshold_p]
         # self.word_count_positive = self.word_count_positive[self.word_count_positive >= threshold_p]
         # self.word_count_negative = self.word_count_negative[self.word_count_negative >= threshold_p]
 
-
-        for i in range(len(self.word_probability)):
+        threshold_p = (0.0001)
+        for i in list(self.word_probability):
             if self.word_probability[i] < threshold_p:
-                self.word_probability = np.delete(self.word_probability, i)
+                del self.word_probability[i]
+                #self.word_probability = np.delete(self.word_probability, i)
                 if i in range(len(self.word_count_positive)):   #list(dict) return it;s key elements
-                    self. word_count_positive = np.delete(self.word_count_positive, i)
+                    del self.word_count_positive[i]
+                    #self. word_count_positive = np.delete(self.word_count_positive, i)
                 if i in range(len(self.word_count_negative)):  
-                    self.word_count_negative = np.delete(self.word_count_negative, i)
+                    del self.word_count_negative[i]
+                    #self.word_count_negative = np.delete(self.word_count_negative, i)
     
     def find_conditional_probability(self):
-        self.total_positive_words = sum(self.word_count_positive)
+        self.total_positive_words = sum(self.word_count_positive.values())
         self.cp_positive = {}  #Conditional Probability
-        for i in range(len(self.word_count_positive)):
+        for i in list(self.word_count_positive):
             self.cp_positive[i] = (self.word_count_positive[i] / self.total_positive_words)
         
 
-        self.total_negative_words = sum(self.word_count_negative)
+        self.total_negative_words = sum(self.word_count_negative.values())
         self.cp_negative = {}  #Conditional Probability
-        for i in range(len(self.word_count_negative)):
+        for i in list(self.word_count_negative):
             self.cp_negative[i] = (self.word_count_negative[i] / self.total_negative_words)
 
 

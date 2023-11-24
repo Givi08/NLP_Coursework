@@ -12,13 +12,13 @@ class TFIDF:
     def get_terms(self, processed_reviews):
         terms = {}
         for review in processed_reviews:
-            terms[review] = (terms.get(review, 0) + 1)/(len(processed_reviews))
+            terms[review] = (terms.get(review, 0) + 1) #/(len(processed_reviews))
         return terms
       
     
-    def collect_vocabulary(self, review_terms, label_terms):
+    def collect_vocabulary(self, review_terms):
         all_terms = []
-        for doc_id in review_terms:
+        for doc_id in review_terms.keys():
             for term in review_terms.get(doc_id).keys():
                 all_terms.append(term)
         return sorted(set(all_terms))
