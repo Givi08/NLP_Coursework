@@ -28,12 +28,12 @@ class NaiveBayes:
         #         words_in_sentence[index] = lemmatizer.lemmatize(word)
             
         for word in review: ## review aka word_in_sentence
-            if label == 'Positive':   #Positive Review
+            if label == 1:   #Positive Review
                 if word in self.word_count_positive.keys():
                     self.word_count_positive[word]+=1
                 else:
                     self.word_count_positive[word] = 1
-            elif label == 'Negative': #Negative Review
+            elif label == 0: #Negative Review
                 if word in self.word_count_negative.keys():
                     self.word_count_negative[word]+=1
                 else:
@@ -65,12 +65,12 @@ class NaiveBayes:
         self.total_positive_words = sum(self.word_count_positive.values())
         self.cp_positive = {}  #Conditional Probability
         for i in list(self.word_count_positive):
-            self.cp_positive[i] = (self.word_count_positive[i] / self.total_positive_words)
+            self.cp_positive[i] = math.log(self.word_count_positive[i] / self.total_positive_words)
 
         self.total_negative_words = sum(self.word_count_negative.values())
         self.cp_negative = {}  #Conditional Probability
         for i in list(self.word_count_negative):
-            self.cp_negative[i] = (self.word_count_negative[i] / self.total_negative_words)
+            self.cp_negative[i] = math.log(self.word_count_negative[i] / self.total_negative_words)
 
 
     def prediction(self, review):
@@ -105,14 +105,7 @@ class NaiveBayes:
             
         for word in review:
             if word in self.cp_negative.keys():
-                try:
-                    negative_term += math.log(self.cp_negative[word] + (1/negative_M))
-                except:
-                    print(word)
-                    print(self.cp_negative[word])
-                    print((1/negative_M))
-                    print(self.cp_negative[word] + (1/negative_M))
-                    raise Exception()
+                negative_term += math.log(self.cp_negative[word] + (1/negative_M))
             else:
                 negative_term += math.log(1/negative_M)
             if word in self.cp_positive.keys():

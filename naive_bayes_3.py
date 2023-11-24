@@ -7,31 +7,48 @@ import math
 
 class NaiveBayes:
     def __init__(self):
-        self.word_count = []
-        self.word_count_positive = []
-        self.word_count_negative = []
-        self.word_probability = []
+        self.word_count = {}
+        self.word_count_positive = {}
+        self.word_count_negative = {}
+        self.word_probability = {}
 
     def train(self, X_train, y_train):
-        X_train['y_train'] = y_train
+        # X_train['y_train'] = y_train
 
-        self.word_count_positive = sum(np.ceil(X_train[X_train.y_train == 1].values))
-        self.word_count_negative = sum(np.ceil(X_train[X_train.y_train == 0].values))
-        self.word_count = sum(np.ceil(X_train.values))
+        X_array = X_train.values
+        for i in range(len(X_array)):
+            for word in range(len(X_array[i])):
+                if y_train[i] == 1 and X_array[i][word] !=0:   #Positive Review
+                    if word in self.word_count_positive.keys():
+                        self.word_count_positive[word]+=1
+                    else:
+                        self.word_count_positive[word] = 1
+                elif y_train[i] == 0 and X_array[i][word] !=0: #Negative Review
+                    if word in self.word_count_negative.keys():
+                        self.word_count_negative[word]+=1
+                    else:
+                        self.word_count_negative[word] = 1
+                if word in self.word_count.keys():        #For all words. I use this to compute probability.
+                    self.word_count[word]+=1
+                else:
+                    self.word_count[word]=1
 
-        self.word_count_positive = dict(zip(self.word_count_positive, range(len(self.word_count_positive))))
-        self.word_count_negative = dict(zip(self.word_count_negative, range(len(self.word_count_negative))))
-        self.word_count = dict(zip(self.word_count, range(len(self.word_count))))
+            
+
+        # self.word_count_positive = sum(np.ceil(X_train[X_train.y_train == 1].values))
+        # self.word_count_negative = sum(np.ceil(X_train[X_train.y_train == 0].values))
+        # self.word_count = sum(np.ceil(X_train.values))
+
+        # self.word_count_positive = dict(zip(self.word_count_positive, range(len(self.word_count_positive))))
+        # self.word_count_negative = dict(zip(self.word_count_negative, range(len(self.word_count_negative))))
+        # self.word_count = dict(zip(self.word_count, range(len(self.word_count))))
 
     def find_probability(self):
-        self.word_probability = (np.array(list(self.word_count.values())) / sum(self.word_count.values()))
-        self.word_probability = dict(zip(self.word_probability, range(len(self.word_probability))))
-        
-        
-        # self.word_count = self.word_count[self.word_count>= threshold_p]
-        # self.word_count_positive = self.word_count_positive[self.word_count_positive >= threshold_p]
-        # self.word_count_negative = self.word_count_negative[self.word_count_negative >= threshold_p]
-
+        for i in self.word_count:
+          self.total_words =  self.word_count[i] 
+        for i in self.word_count:
+            self.word_probability[i] = (self.word_count[i] / self.total_words)
+    
         threshold_p = (0.0001)
         for i in list(self.word_probability):
             if self.word_probability[i] < threshold_p:
