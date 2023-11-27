@@ -112,10 +112,8 @@ class PreProcessing:
         return terms
 
 
-    def set_data_splits(self, data):
+    def set_data_splits(self, X, y):
         ## Split pandas dataframe and store how it's being split (3 splits)
-        X = data.review
-        y = data.label
 
         # Split the dataset into training (70%), testing (15%), and development (15%)
         X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)

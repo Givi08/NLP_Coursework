@@ -2,8 +2,8 @@ import numpy as np
 from collections import defaultdict
 
 class NB_Classifier:
-    def __init__(self) -> None:
-        self.alpha = 1 # Laplace smoothing parameter
+    def __init__(self, alpha) -> None:
+        self.alpha = alpha # Laplace smoothing parameter
 
         self.class_probabilities = {} # probability of review belonging to a class ie. prior probability
         self.feature_counts = {} # dict mapping label to sum of all features belonging to that label {1: [10, 20, 3...]}
@@ -46,7 +46,7 @@ class NB_Classifier:
         
         for label, samples in separated.items():
             self.class_totals[label] = np.sum(samples)
-            self.class_probabilities[label] = len(samples) / len(X)
+            self.class_probabilities[label] = (len(samples) / len(X))
             
             self.feature_counts[label] = np.sum(samples, axis=0)
 
