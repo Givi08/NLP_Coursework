@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import numpy as np
 
 import nltk
 import string
@@ -12,10 +13,9 @@ nltk.download('wordnet')
 from nltk import word_tokenize
 from nltk import ngrams
 from nltk.corpus import stopwords
-from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.snowball import SnowballStemmer
 from nltk.stem import WordNetLemmatizer
 
-import operator
 
 class PreProcessing:
     def __init__(self):
@@ -27,89 +27,69 @@ class PreProcessing:
         self.y_test = None
         self.y_dev = None
         self.n_grams = 0
-
-    def lemmatizing(self, text, include_stopwords = False, include_punctuation = False, keep_uppercase = False):
-        stoplist = set(stopwords.words('english'))
-        lemmatizer=WordNetLemmatizer()
-
-        if not keep_uppercase:
-            text = text.lower()
-
-        if not include_stopwords and not include_punctuation:
-            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)
-                if (not word in stoplist) and (not word in string.punctuation)]
-        
-        elif not include_stopwords and include_punctuation:
-            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)
-                if (not word in stoplist)]
-        
-        elif include_stopwords and not include_punctuation:
-            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)
-                if (not word in string.punctuation)]
-            
-        else:
-            word_list = [lemmatizer.lemmatize(word) for word in word_tokenize(text)]
-
-            
+        self.stop_words = set(stopwords.words('english'))
+    
+    def lowercase(self, text):
+        word_list =  [review.lower() for review in text]
         return word_list
     
-
-    def stemming(self, text, include_stopwords = False, include_punctuation = False, keep_uppercase = False):
-        ## Use Stopwords example from labs
-        stoplist = set(stopwords.words('english'))
-        st = LancasterStemmer()
-
-        if not keep_uppercase:
-            text = text.lower()
-
-        if not include_stopwords and not include_punctuation:
-            word_list = [st.stem(word) for word in word_tokenize(text)
-                if (not word in stoplist) and (not word in string.punctuation)]
-        
-        elif not include_stopwords and include_punctuation:
-            word_list = [st.stem(word) for word in word_tokenize(text)
-                if (not word in stoplist)]
-        
-        elif include_stopwords and not include_punctuation:
-            word_list = [st.stem(word) for word in word_tokenize(text)
-                if (not word in string.punctuation)]
-            
-        else:
-            word_list = [st.stem(word) for word in word_tokenize(text)]
-
-            
+    def remove_punctuation(self, text):
+        word_list = [''.join([char for char in review if char not in string.punctuation]) for review in text]
         return word_list
+    
+    def remove_stopwords(self, text):
+        
+        word_list = [' '.join([word for word in word_tokenize(review) if word.lower() not in self.stop_words]) for review in text]
+        return word_list
+    
+    def stem(self, text):
+        st = SnowballStemmer('english')
+        word_list = [[st.stem(word) for word in word_tokenize(review)] for review in text]
+        return word_list
+    
+    def lemmatize(self, text):
+        lemmatizer = WordNetLemmatizer()
+        word_list = [[lemmatizer.lemmatize(word) for word in word_tokenize(review)] for review in text]
+        return word_list
+    
+    def remove_low_proba(self, features, threshold,):
+        features = np.array(list(features.values()))
+
+        proba_features = np.sum(features, axis = 0) / np.sum(features)
+
+        sorted_indexes = np.argsort(proba_features)
+        sorted_probs = np.sort(proba_features)
+
+        cumulative_sum = np.cumsum(sorted_probs)
+
+        remove_point = threshold * np.sum(proba_features)
+
+        to_remove_sorted = np.argmax(cumulative_sum >= remove_point)
+
+        indexes = list(sorted_indexes[to_remove_sorted:])
+
+
+        return np.array([np.delete(row, indexes) for row in features])
+
+
     
     def set_n_grams(self, n, text):
+        # n_grams = [' '.join([' '.join(gram) for gram in ngrams(review.split(), n)]) for review in text]
+        # return n_grams
+        n_grams = []
         if n > 5:
-            n_grams = list(ngrams(text, 5))
+            for review in text:
+                n_grams.append(list(ngrams(review, 5)))
         else:
-            n_grams = list(ngrams(text, n))
+            for review in text:
+                n_grams.append(list(ngrams(review, n)))
+            
         self.n_grams = n_grams
         return n_grams
-    
+
     def get_n_grams(self):
         return self.n_grams
        
-
-    def freq_dist(word_list, up_to):
-        word_map = {}
-        for a_word in word_list:
-            word_map[a_word] = word_map.get(a_word, 0) + 1
-        
-        total_count = sum(word_map.values())
-        sorted_map = (sorted(word_map.items(), key=operator.itemgetter(1)))[::-1]
-        percentage_map = [(item[0], 100*float(item[1])/float(total_count)) for item in sorted_map[:up_to]]
-        return percentage_map
-
-
-    def tfidf(self, text):
-        ## Use TFIDF example from labs
-        ## Document here is the class Positive or Negative Review
-        terms = {}
-        for word in text:
-            terms[word] = terms.get(word, 0) + 1
-        return terms
 
 
     def set_data_splits(self, X, y):
@@ -124,11 +104,3 @@ class PreProcessing:
         return X_train, X_test, X_dev, y_train, y_test, y_dev
             
             
-    
-    
-
-    # def preprocess_text(self, text):
-    #     # Simple text preprocessing: lowercase and remove non-alphanumeric characters
-    #     text = text.lower()
-    #     text = re.sub(r'[^a-zA-Z\s]', '', text)
-    #     return text
