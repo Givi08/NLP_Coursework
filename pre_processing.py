@@ -15,6 +15,7 @@ from nltk import ngrams
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem import WordNetLemmatizer
+from nltk.probability import FreqDist
 
 
 class PreProcessing:
@@ -51,6 +52,16 @@ class PreProcessing:
         lemmatizer = WordNetLemmatizer()
         word_list = [[lemmatizer.lemmatize(word) for word in word_tokenize(review)] for review in text]
         return word_list
+    
+    def zipfs_law(self, percentage_removal, text):
+        tokens = [item for sublist in text for item in sublist]
+        freq_dist = FreqDist(tokens)
+        ranked_words = sorted(freq_dist, key=freq_dist.get, reverse=True)
+        to_del = set(ranked_words[int(percentage_removal * len(ranked_words)):])
+
+        return [[word for word in sublist if word not in to_del] for sublist in text]
+
+
     
     def remove_low_proba(self, features, threshold,):
         features = np.array(list(features.values()))

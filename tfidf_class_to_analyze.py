@@ -50,17 +50,28 @@ class TFIDF:
             doc_idfs[term] = math.log(float(len(d_terms.keys()))/float(1 + doc_count))
         return doc_idfs
     
+    # def vectorize_idf(self, input_terms, input_idfs, shared_vocabulary):
+    #     output = {}
+    #     for item_id in input_terms.keys():
+    #         terms = input_terms.get(item_id)
+    #         output_vector = []
+    #         for term in shared_vocabulary:
+    #             if term in terms.keys():
+    #                 output_vector.append(input_idfs.get(term)*float(terms.get(term)))
+    #             else:
+    #                 output_vector.append(float(0))
+    #         output[item_id] = output_vector
+    #     return output
     def vectorize_idf(self, input_terms, input_idfs, shared_vocabulary):
         output = {}
-        for item_id in input_terms.keys():
-            terms = input_terms.get(item_id)
-            output_vector = []
-            for term in shared_vocabulary:
-                if term in terms.keys():
-                    output_vector.append(input_idfs.get(term)*float(terms.get(term)))
-                else:
-                    output_vector.append(float(0))
+        
+        for item_id, terms in input_terms.items():
+            output_vector = [
+                input_idfs.get(term, 0.0) * float(terms.get(term, 0.0))
+                for term in shared_vocabulary
+            ]
             output[item_id] = output_vector
+        
         return output
 
 
