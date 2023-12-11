@@ -31,7 +31,7 @@ class NB_Classifier:
         return separated
     
     """fit
-        For each label it fills the dictionaries defined in init:
+        For each label it fills the dictionaries defined in __init__:
         self.class_totals is populated with the sum of all scores in positive / negative reviews
         self.class_probabilities: is populated with the prior probability for each label
         self.feature_counts: is populated with a vector containig the sum of each feature for each label
@@ -76,10 +76,10 @@ class NB_Classifier:
     """predict
 
         Args:
-            X (np.ndarray): _description_
+            X (np.ndarray): vector containg vectors of input features
 
         Returns:
-            _type_: _description_
+            np.ndarray: vector containing value 1 or 0 depending on the prediceted class
         """
     def predict(self, X):
         predictions = []

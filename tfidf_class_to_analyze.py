@@ -1,6 +1,4 @@
 from collections import defaultdict
-import pandas as pd
-import nltk
 import math
 
 class TFIDF:
@@ -9,13 +7,28 @@ class TFIDF:
         self.positive_word_count = defaultdict(int)
         self.negative_word_count = defaultdict(int)
 
+    """get_terms: maps each word to its count
+
+    Args:
+        processed_reviews (list): contains the preprocessed(tokenized, stopwords, lowercased...) words
+
+    Returns:
+        dict: dictionary mapping each review to a a dict of its word mapped to their counts in each document
+    """
     def get_terms(self, processed_reviews):
         terms = {}
         for review in processed_reviews:
             terms[review] = (terms.get(review, 0) + 1) #/(len(processed_reviews))
         return terms
       
-    
+    """collect_vocabulary: gets a list every individual unique token.
+
+    Args:
+        review_terms (dict): dictionary outputted in get_terms
+
+    Returns:
+        list: contains each unique token
+    """
     def collect_vocabulary(self, review_terms):
         all_terms = []
         for doc_id in review_terms.keys():
@@ -23,6 +36,7 @@ class TFIDF:
                 all_terms.append(term)
         return sorted(set(all_terms))
     
+
     def vectorize(self, input_terms, shared_vocabulary):
         output = {}
         for item_id in input_terms.keys():
@@ -36,7 +50,15 @@ class TFIDF:
             output[item_id] = output_vector
         return output
     
+    """calculate_idfs: Calculates the idf for each term in the list returned from collect_vocabulary
 
+    Args:
+        shared_vocabulary (list): list returned from collect_vocabulary
+        d_terms (dict): dictionary returned from get_terms
+
+    Returns:
+        dict: maps each word in shareed_vocabulary to the idf score
+    """
     def calculate_idfs(self, shared_vocabulary, d_terms):
         doc_idfs = {}
         for term in shared_vocabulary:
@@ -62,6 +84,17 @@ class TFIDF:
     #                 output_vector.append(float(0))
     #         output[item_id] = output_vector
     #     return output
+    
+    """vectorize_idf: returns a dictionary mapping each review to the normalized idf score of each word in the collective dictionary appearing in the reiview
+
+    Args:
+        input_terms (dict): dictionary returned from get_terms
+        input_idfs (dict): dictionary returned from calculate_idfs
+        shared_vocabulary (list): lisst returned from collect_vocabulary
+
+    Returns:
+        dict: dictionary mapping each review to the normalized idf score of each word in the collective dictionary appearing in the reiview
+    """
     def vectorize_idf(self, input_terms, input_idfs, shared_vocabulary):
         output = {}
         
@@ -73,63 +106,3 @@ class TFIDF:
             output[item_id] = output_vector
         
         return output
-
-
-
-
-
-###########################################################
-
-# tfidf = TFIDF()
-
-# reviews = pd.read_csv('reviews.csv')
-# print('here')
-# review_terms = {}
-# label_terms = {}
-# for review_id in reviews.index:
-#     review_terms[review_id] = tfidf.get_terms(reviews.review.loc[review_id])
-# for label_id in reviews.index:
-#     label_terms[label_id] = tfidf.get_terms(reviews.label.loc[label_id])
-
-
-# print(f"{len(review_terms)} documents in total")
-# d1_terms = review_terms.get(1)
-# print("Terms and frequencies for document with id 1:")
-# print(d1_terms)
-# print(f"{len(d1_terms)} terms in this document")
-# print()
-# print(f"{len(label_terms)} queries in total")
-# q1_terms = label_terms.get(1)
-# print("Terms and frequencies for query with id 1:")
-# print(q1_terms)
-# print(f"{len(q1_terms)} terms in this query")
-
-
-# all_terms = tfidf.collect_vocabulary(review_terms, label_terms)
-# print(f"{len(all_terms)} terms in the shared vocabulary")
-# print("First 10:")
-# print(all_terms[:10])
-
-
-# doc_vectors = tfidf.vectorize(review_terms, all_terms)
-# qry_vectors = tfidf.vectorize(label_terms, all_terms)
-
-# print(f"{len(doc_vectors)} document vectors")
-# d1460_vector = doc_vectors.get(1460)
-# print(f"{len(d1460_vector)} terms in this document")
-# print(f"{len(qry_vectors)} query vectors")
-# q112_vector = qry_vectors.get(112)
-# print(f"{len(q112_vector)} terms in this query")
-
-
-# doc_idfs = tfidf.calculate_idfs(all_terms, review_terms)
-# print(f"{len(doc_idfs)} terms with idf scores")
-# print("Idf score for the word system:")
-# print(doc_idfs.get("system"))
-
-# doc_vectors = tfidf.vectorize_idf(review_terms, doc_idfs, all_terms)
-
-# print(f"{len(doc_vectors)} document vectors")
-# print("Number of idf-scored words in a particular document:")
-# print(len(doc_vectors.get(1460)))
-
