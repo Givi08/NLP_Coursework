@@ -43,7 +43,7 @@ Breakdown of tasks:
 | FALSE         | TRUE     | 2%         | FALSE     | FALSE     | TRUE        | 78.5%    | 78.2%     | 78.9%  | 78.5%    |
 | FALSE         | TRUE     | 0%         | TRUE      | TRUE      | FALSE       | 78.5%    | 81.5%     | 73.6%  | 77.3%    |
 | FALSE         | TRUE     | 0%         | TRUE      | FALSE     | FALSE       | 78.2%    | 81.1%     | 73.2%  | 77.0%    |
-| TRUE          | FALSE    | 0%         | TRUE      | TRUE      | FALSE       | 78.2%    | 80.0%     | 74.9%
+| TRUE          | FALSE    | 0%         | TRUE      | TRUE      | FALSE       | 78.2%    | 80.0%     | 74.9%  | 77.4%    |
 
 More results can be achieved by running through the Notebook `Final_submission.ipynb`
 
