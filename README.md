@@ -9,8 +9,10 @@ Breakdown of tasks:
 - Compare with sklearn implementation of Naive Bayes, SGD, SVM and BERT.
 - Use different pre-processing metrics to analyse.
 
+My own implementation achieved identical results to sklearn's.
 
-  The results are below:
+
+The results for my own Naive Bayes implementation are below:
 
 | Lemmatization | Stemming | Zipf's law | Stopwords | Lowercase | Punctuation | Accuracy | Precision | Recall | F1 Score |
 |---------------|----------|------------|-----------|-----------|-------------|----------|-----------|--------|----------|
