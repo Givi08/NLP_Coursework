@@ -12,7 +12,7 @@ Breakdown of tasks:
 
   The results are below:
 
-  | Lemmatization | Stemming | Zipf's law | Stopwords | Lowercase | Punctuation | Accuracy | Precision | Recall | F1 Score |
+| Lemmatization | Stemming | Zipf's law | Stopwords | Lowercase | Punctuation | Accuracy | Precision | Recall | F1 Score |
 |---------------|----------|------------|-----------|-----------|-------------|----------|-----------|--------|----------|
 | TRUE          | FALSE    | 2%         | TRUE      | FALSE     | TRUE        | 82.0%    | 82.2%     | 81.6%  | 81.9%    |
 | TRUE          | FALSE    | 2%         | TRUE      | FALSE     | FALSE       | 81.7%    | 82.3%     | 80.6%  | 81.4%    |
