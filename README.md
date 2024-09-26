@@ -53,5 +53,6 @@ More results can be achieved by running through the Notebook `Final_submission.i
 
 
 TODO
-- Clean up code
-- Remove useless files
+- Clean up code.
+- Remove useless files.
+- Optimize running time. Simplify TFIDF.
